@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eulee <marvin@42.fr>                       +#+  +:+       +#+        */
+/*   By: eulee <eulee@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 16:26:27 by eulee             #+#    #+#             */
-/*   Updated: 2025/08/11 16:28:57 by eulee            ###   ########.fr       */
+/*   Updated: 2025/08/11 16:39:29 by eulee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "philo.h"
 
 int	main(int ac, char **av)
 {
@@ -24,6 +26,7 @@ int	main(int ac, char **av)
 	rules.start_time = get_time_in_ms();
 	if (init_philo(&rules, &philo) != 0)
 		return (0);
+
 	if (rules.nb_philo == 1)
 	{
 		handle_one_philo(philo);

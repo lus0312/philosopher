@@ -6,7 +6,7 @@
 /*   By: eulee <eulee@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 13:18:03 by eulee             #+#    #+#             */
-/*   Updated: 2025/08/11 16:15:18 by eulee            ###   ########.fr       */
+/*   Updated: 2025/08/11 16:37:24 by eulee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,10 @@ void take_forks(t_philo *philo)
 
 void eat(t_philo *philo)
 {
+    print_status(philo, "is eating", 0);
 	pthread_mutex_lock(&philo->meal_mutex);
 	philo->last_eat = get_time_in_ms();
     pthread_mutex_unlock(&philo->meal_mutex);
-    print_status(philo, "is eating", 0);
     precise_usleep(philo->rules->time_to_eat, philo);
 	pthread_mutex_lock(&philo->meal_mutex);
 	philo->eat_count++;
@@ -120,13 +120,8 @@ void	sleep_and_think(t_philo *philo)
 void	*philo_routine(void *arg)
 {
 	t_philo *philo;
-
 	philo = (t_philo *)arg;
-	
-	printf("[THREAD %d] started at %lld ms (start_time = %lld ms)\n", philo->id, get_time_in_ms(), philo->rules->start_time);
 
-	while (get_time_in_ms() < philo->rules->start_time)
-		usleep(100);
 	if (philo->id % 2 == 0 || philo->id == philo->rules->nb_philo) // 짝수 철학자 딜레이 줘서 데드락 방지
 		usleep(1000);
 	while (!check_stop(philo))
