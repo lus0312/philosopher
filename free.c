@@ -6,7 +6,7 @@
 /*   By: eulee <eulee@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:58:04 by eulee             #+#    #+#             */
-/*   Updated: 2025/08/11 14:47:43 by eulee            ###   ########.fr       */
+/*   Updated: 2025/08/22 21:23:53 by eulee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	free_philos(t_philo **philos, int i)
 		pthread_mutex_destroy(&(*philos)[i].meal_mutex);
 	free(*philos);
 	*philos = NULL;
-
 }
 
 void	free_rules(t_rules *rules)

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: eulee <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/22 15:46:33 by eulee             #+#    #+#             */
+/*   Updated: 2025/08/22 22:02:48 by eulee            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -35,17 +47,20 @@ typedef struct s_philo
 	t_rules			*rules;
 }	t_philo;
 
-int		init_rules(t_rules *rules, int ac, char **av);
-int		init_philo(t_rules *rules, t_philo **philos);
-void	*philo_routine(void *arg);
-void	handle_one_philo(t_philo *philo);
-void	print_status(t_philo *philo, char *msg, int force);
-int		monitoring(void *arg);
-void	free_all(t_philo *philos, t_rules *rules);
-int		ft_atoi(const char *str);
+int			init_rules(t_rules *rules, int ac, char **av);
+int			init_philo(t_rules *rules, t_philo **philos);
+int			init_mutexes(t_rules *rules);
+int			init_philo_mutex(t_rules *rules, t_philo *philos);
+void		*philo_routine(void *arg);
+void		handle_one_philo(t_philo *philo);
+int			check_stop(void *arg);
+void		print_status(t_philo *philo, char *msg, int force);
+int			monitoring(void *arg);
+void		free_all(t_philo *philos, t_rules *rules);
+int			ft_atoi(const char *str);
 long long	get_time_in_ms(void);
-void	free_rules(t_rules *rules);
-void	free_philos(t_philo **philos, int i);
-void	free_forks(t_rules *rules, int i);
+void		free_rules(t_rules *rules);
+void		free_philos(t_philo **philos, int i);
+void		free_forks(t_rules *rules, int i);
 
 #endif
