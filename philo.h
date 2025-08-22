@@ -59,6 +59,7 @@ int			monitoring(void *arg);
 void		free_all(t_philo *philos, t_rules *rules);
 int			ft_atoi(const char *str);
 long long	get_time_in_ms(void);
+void		precise_usleep(long long time_in_ms, t_philo *philo);
 void		free_rules(t_rules *rules);
 void		free_philos(t_philo **philos, int i);
 void		free_forks(t_rules *rules, int i);

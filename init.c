@@ -6,7 +6,7 @@
 /*   By: eulee <eulee@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:51:10 by eulee             #+#    #+#             */
-/*   Updated: 2025/08/22 21:37:42 by eulee            ###   ########.fr       */
+/*   Updated: 2025/08/22 22:41:00 by eulee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,7 @@ int	init_mutexes(t_rules *rules)
 	}
 	rules->forks = malloc(sizeof(pthread_mutex_t) * (rules->nb_philo));
 	if (!rules->forks)
-	{
-		free_rules(rules);
-		return (1);
-	}
+		return (free_rules(rules), 1);
 	i = 0;
 	while (i < rules->nb_philo)
 	{
