@@ -6,7 +6,7 @@
 /*   By: eulee <eulee@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 13:18:03 by eulee             #+#    #+#             */
-/*   Updated: 2025/08/11 16:37:24 by eulee            ###   ########.fr       */
+/*   Updated: 2025/08/22 12:46:33 by eulee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,40 +24,40 @@ int	check_stop(void *arg)
 	return (is_dead);
 }
 
-void	precise_usleep(long long time_in_ms, t_philo *philo)
-{
-	long long	start_time;
-
-	start_time = get_time_in_ms();
-	while (!check_stop(philo))
-	{
-		if((get_time_in_ms() - start_time) > time_in_ms)
-			break;
-		usleep(100);
-	}
-}
-
-//void precise_usleep(long long time_in_ms, t_philo *philo)
+//void	precise_usleep(long long time_in_ms, t_philo *philo)
 //{
-//    long long start_time;
-//    long long end_time;
-//    long long now;
-//    long long diff;
+//	long long	start_time;
 
-//    start_time = get_time_in_ms();
-//    end_time = start_time + time_in_ms;
-//    while (!check_stop(philo))
-//    {
-//        now = get_time_in_ms();
-//        if (now >= end_time)
-//            break;
-//        diff = end_time - now;
-//        if (diff > 2) // 2ms 이상 남으면 그만큼 자고
-//            usleep(diff * 1000 / 2);
-//        else
-//            usleep(100); // 아주 짧게 반복
-//    }
+//	start_time = get_time_in_ms();
+//	while (!check_stop(philo))
+//	{
+//		if((get_time_in_ms() - start_time) > time_in_ms)
+//			break;
+//		usleep(100 * philo->rules->nb_philo);
+//	}
 //}
+
+void precise_usleep(long long time_in_ms, t_philo *philo)
+{
+    long long start_time;
+    long long end_time;
+    long long now;
+    long long diff;
+
+    start_time = get_time_in_ms();
+    end_time = start_time + time_in_ms;
+    while (!check_stop(philo))
+    {
+        now = get_time_in_ms();
+        if (now >= end_time)
+            break;
+        diff = end_time - now;
+        if (diff > 2) // 2ms 이상 남으면 그만큼 자고
+            usleep(diff * 1000 / 2);
+        else
+            usleep(100); // 아주 짧게 반복
+    }
+}
 
 void	handle_one_philo(t_philo *philo)
 {
@@ -111,9 +111,21 @@ void eat(t_philo *philo)
 
 void	sleep_and_think(t_philo *philo)
 {
+	long long time_to_think;
+    long long time_since_last_eat;
+
 	print_status(philo, "is sleeping",0);
 	precise_usleep(philo->rules->time_to_sleep, philo);
 	print_status(philo, "is thinking",0);
+    pthread_mutex_lock(&philo->meal_mutex);
+    time_since_last_eat = get_time_in_ms() - philo->last_eat;
+    pthread_mutex_unlock(&philo->meal_mutex);
+
+    time_to_think = philo->rules->time_to_die - time_since_last_eat - philo->rules->time_to_eat- 10;
+    if (time_to_think > 0)
+		usleep(time_to_think * philo->rules->nb_philo);
+    else
+        usleep(100); // 금방 굶어죽을 상황, 최소 시간만 생각
 }
 
 
@@ -123,7 +135,7 @@ void	*philo_routine(void *arg)
 	philo = (t_philo *)arg;
 
 	if (philo->id % 2 == 0 || philo->id == philo->rules->nb_philo) // 짝수 철학자 딜레이 줘서 데드락 방지
-		usleep(1000);
+		usleep(1000 * philo->id);
 	while (!check_stop(philo))
 	{
 		take_forks(philo);
@@ -131,7 +143,7 @@ void	*philo_routine(void *arg)
 		sleep_and_think(philo);
 		if (check_stop(philo))
 			break;
-		usleep(1000);
+		usleep(500 * philo->rules->nb_philo);
 	}
 	return (NULL);
 }
