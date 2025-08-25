@@ -6,7 +6,7 @@
 /*   By: eulee <eulee@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:51:10 by eulee             #+#    #+#             */
-/*   Updated: 2025/08/22 22:41:00 by eulee            ###   ########.fr       */
+/*   Updated: 2025/08/25 19:56:38 by eulee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,13 @@ int	init_rules(t_rules *rules, int ac, char **av)
 	i = 0;
 	if (ac != 5 && ac != 6)
 		return (1);
-	if (ft_atoi(av[1]) <= 0)
-		return (1);
 	rules->nb_philo = ft_atoi(av[1]);
 	rules->time_to_die = ft_atoi(av[2]);
 	rules->time_to_eat = ft_atoi(av[3]);
 	rules->time_to_sleep = ft_atoi(av[4]);
+	if (rules->nb_philo <= 0 || rules->time_to_die < 0
+		|| rules->time_to_eat < 0 || rules->time_to_sleep < 0)
+		return (1);
 	if (ac == 6)
 	{
 		rules->must_eat = ft_atoi(av[5]);
