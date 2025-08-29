@@ -6,7 +6,7 @@
 /*   By: eulee <eulee@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 15:46:33 by eulee             #+#    #+#             */
-/*   Updated: 2025/08/24 15:23:59 by eulee            ###   ########.fr       */
+/*   Updated: 2025/08/28 20:01:17 by eulee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,12 @@ typedef struct s_rules
 	int				nb_philo;
 	int				must_eat;
 	int				is_dead;
+	int				must_eat_count;
 	long long		start_time;
 	long long		time_to_die;
 	long long		time_to_eat;
 	long long		time_to_sleep;
+	pthread_mutex_t	must_eat_count_mutex;
 	pthread_mutex_t	dead_mutex;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	*forks;

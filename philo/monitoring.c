@@ -6,36 +6,13 @@
 /*   By: eulee <eulee@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 15:57:17 by eulee             #+#    #+#             */
-/*   Updated: 2025/08/24 15:39:04 by eulee            ###   ########.fr       */
+/*   Updated: 2025/08/29 20:10:30 by eulee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	check_meal_limit(t_philo *philos, int i, int *must_eat_count)
-{
-	if (philos[i].rules->must_eat != -1
-		&& philos[i].eat_count == philos[i].rules->must_eat)
-	{
-		pthread_mutex_unlock(&philos[i].meal_mutex);
-		if (philos[i].eat_flag != 1)
-		{
-			(*must_eat_count)++;
-			philos[i].eat_flag = 1;
-		}
-		pthread_mutex_lock(&philos[i].meal_mutex);
-		if (*must_eat_count == philos[0].rules->nb_philo)
-		{
-			pthread_mutex_lock(&philos[i].rules->dead_mutex);
-			philos[i].rules->is_dead = 1;
-			pthread_mutex_unlock(&philos[i].rules->dead_mutex);
-			return (1);
-		}
-	}
-	return (0);
-}
-
-int	check_death_or_full(t_philo *philos, int i, int *must_eat_count)
+int	check_death_or_full(t_philo *philos, int i)
 {
 	long long	now;
 
@@ -50,10 +27,17 @@ int	check_death_or_full(t_philo *philos, int i, int *must_eat_count)
 		print_status(&philos[i], "died", 1);
 		return (1);
 	}
-	if (check_meal_limit(philos, i, must_eat_count) == 1)
+	if (philos[i].rules->must_eat != -1
+		&& philos[i].eat_count == philos[i].rules->must_eat)
 	{
-		pthread_mutex_unlock(&philos[i].meal_mutex);
-		return (1);
+		if (philos[i].eat_flag != 1)
+		{
+			pthread_mutex_lock(&philos[i].rules->must_eat_count_mutex);
+			philos[i].rules->must_eat_count++;
+			printf("must_eat_count[%d] : %d\n", i, philos[i].rules->must_eat_count);
+			pthread_mutex_unlock(&philos[i].rules->must_eat_count_mutex);
+			philos[i].eat_flag = 1;
+		}
 	}
 	pthread_mutex_unlock(&philos[i].meal_mutex);
 	return (0);
@@ -63,19 +47,28 @@ int	monitoring(void *arg, t_rules *rules)
 {
 	t_philo		*philos;
 	int			i;
-	int			must_eat_count;
 
 	philos = (t_philo *)arg;
-	must_eat_count = 0;
 	while (1)
 	{
 		i = 0;
 		while (i < rules->nb_philo)
 		{
-			if (check_death_or_full(philos, i, &must_eat_count) == 1)
+			pthread_mutex_lock(&philos->rules->must_eat_count_mutex);
+			if (philos->rules->must_eat_count == philos->rules->nb_philo)
+			{
+				pthread_mutex_unlock(&philos->rules->must_eat_count_mutex);
+				pthread_mutex_lock(&philos[i].rules->dead_mutex);
+				philos[i].rules->is_dead = 1;
+				pthread_mutex_unlock(&philos[i].rules->dead_mutex);
+				return (1);
+			}
+			pthread_mutex_unlock(&philos->rules->must_eat_count_mutex);
+			if (check_death_or_full(philos, i))
 				return (1);
 			i++;
 		}
 		usleep(500);
-	}	
+	}
+	return (1);
 }

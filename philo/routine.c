@@ -6,7 +6,7 @@
 /*   By: eulee <eulee@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 13:18:03 by eulee             #+#    #+#             */
-/*   Updated: 2025/08/24 15:20:48 by eulee            ###   ########.fr       */
+/*   Updated: 2025/08/29 19:05:50 by eulee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,15 @@ void	*philo_routine(void *arg)
 	while (!check_stop(philo))
 	{
 		take_forks(philo);
+		if (check_stop(philo))
+			break ;
 		eat(philo);
+		if (check_stop(philo))
+			break ;
 		sleep_and_think(philo);
 		if (check_stop(philo))
 			break ;
-		usleep(500 * philo->rules->nb_philo);
+		//usleep(500 * philo->rules->nb_philo);
 	}
 	return (NULL);
 }

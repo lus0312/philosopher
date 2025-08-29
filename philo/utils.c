@@ -6,7 +6,7 @@
 /*   By: eulee <eulee@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 14:21:43 by eulee             #+#    #+#             */
-/*   Updated: 2025/08/24 19:31:25 by eulee            ###   ########.fr       */
+/*   Updated: 2025/08/27 23:49:53 by eulee            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ long long	get_time_in_ms(void)
 
 	if (gettimeofday(&now, NULL) != 0)
 		return (-1);
-	return (now.tv_sec * 1000 + (now.tv_usec + 500) / 1000);
+	return (now.tv_sec * 1000LL + (now.tv_usec + 500) / 1000);
 }
 
 void	print_status(t_philo *philo, char *msg, int force)
